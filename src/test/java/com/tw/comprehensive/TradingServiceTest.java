@@ -36,4 +36,20 @@ class TradingServiceTest {
         assertEquals(trade.getReference(), result.getReference());
     }
 
+    @Test
+    void should_verity_call_createTrade_method_of_tradeRepository_when_call_createTrade_of_TradeService_then_use_the_same_id() {
+        // given
+        TradeRepository tradeRepository = mock(TradeRepository.class);
+        AuditService auditService = spy(AuditService.class);
+        TradingService tradingService = new TradingService(tradeRepository, auditService);
+        Trade trade = mock(Trade.class);
+        Long id = 1L;
+        // when
+        doNothing().when(auditService).logNewTrade(trade);
+        when(tradeRepository.createTrade(trade)).thenReturn(id);
+        Long result = tradingService.createTrade(trade);
+        // then
+        assertEquals(id, result);
+    }
+
 }
